@@ -1,5 +1,5 @@
 set $mod Mod1
-font pango:Noto Sans 10
+font pango:Noto Sans Disp 11
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
@@ -9,30 +9,25 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- lock --nofork
 exec --no-startup-id nm-applet
 exec --no-startup-id redshift
 exec --no-startup-id compton --config ~/.config/compton.conf
-exec --no-startup-id nitrogen --restore
+exec --no-startup-id imwheel -b "4 5"
 exec_always --no-startup-id ~/.config/polybar/launch
-exec_always --no-startup-id setxkbmap -option ctrl:swapcaps
+exec --no-startup-id setxkbmap -option ctrl:swapcaps
 exec_always --no-startup-id xcape -e "Control_L=Escape"
 
-# Add a secondary monitor support
-exec xrandr --output eDP-1 --primary
-exec xrandr --output HDMI-1 --auto --left-of eDP-1
-exec xrandr --output HDMI-2 --auto --left-of eDP-1
-exec xrandr --output DP-1 --auto --left-of eDP-1
-exec xrandr --output DP-2 --auto --left-of eDP-1
+# Add monitors
+exec xrandr --output DisplayPort-1 --primary
+exec xrandr --output HDMI-A-0 --rotate right --left-of DisplayPort-1 && nitrogen --restore && i3-msg restart &
 
-# Use amixer to adjust volume
-bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -q set Master 10%+ unmute
-bindsym XF86AudioLowerVolume exec --no-startup-id amixer -q set Master 10%- unmute
-bindsym XF86AudioMute exec --no-startup-id amixer -q set Master toggle 
-bindsym XF86AudioMicMute exec --no-startup-id amixer -q set Capture toggle
+# Use pulseaudio-ctl to adjust volume in PulseAudio.
+bindsym XF86AudioRaiseVolume exec --no-startup-id pulseaudio-ctl up 5
+bindsym XF86AudioLowerVolume exec --no-startup-id pulseaudio-ctl down 5
+bindsym XF86AudioMute exec --no-startup-id pulseaudio-ctl mute
+bindsym XF86AudioMicMute exec --no-startup-id pulseaudio-ctl mute-input
 
-# Use the light program to adjust screen brightness
-bindsym XF86MonBrightnessDown exec --no-startup-id light -U 5
-bindsym XF86MonBrightnessUp exec --no-startup-id light -A 5
-
-# Toggle the touchbar
-bindsym XF86Favorites exec --no-startup-id toggletouchpad
+# Player control bindings for true players
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -84,23 +79,25 @@ bindsym $mod+e layout toggle split
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
 
+# change focus between tiling / floating windows
+# bindsym $mod+space focus mode_toggle
+
 # focus the parent container
 bindsym $mod+a focus parent
 
 # focus the child container
 bindsym $mod+d focus child
 
-# border and title colors
+#border and title colors
 default_border pixel
 
 #default_floating_border none
-client.focused          #665c54 #665c54 #eddbb2 #32302f   #32302f
+client.focused          #32302f #32302f #eddbb2 #32302f   #32302f
 client.focused_inactive #282828 #5f676a #ffffff #1d2021   #1d2020
 client.unfocused        #3c3836 #3c3836 #a89984 #292d2e   #222222
 client.urgent           #cc241d #cc241d #ebdbb2 #cc241d   #cc241d
 client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 
-client.background       #1d2021
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
 set $ws1 "1"
@@ -137,6 +134,38 @@ bindsym $mod+Shift+7 move container to workspace number $ws7
 bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
+
+# bind workspaces to screens
+workspace 1 output primary
+workspace 2 output primary
+workspace 3 output primary
+workspace 4 output primary
+workspace 5 output primary
+workspace 6 output primary
+workspace 7 output primary
+workspace 8 output primary
+workspace 9 output HDMI-A-0
+workspace 10 output HDMI-A-0
+
+# assign apps to workspaces
+assign [class="Skype"] $ws3
+assign [class="TelegramDesktop"] $ws5
+for_window [class="Spotify"] move to workspace $ws10
+
+# configure certain floating apps
+for_window [class="Nitrogen"] floating enable resize set 900 600
+for_window [class="Pavucontrol"] floating enable resize set 900 600
+for_window [class="Lxappearance"] floating enable resize set 900 600
+for_window [class="mpv"] border pixel
+for_window [class="mpv"] floating enable rezise set 1280 768
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="bubble"] floating enable
+for_window [window_role="task_dialog"] floating enable
+for_window [window_role="Preferences"] floating enable
+for_window [window_type="dialog"] floating enable
+for_window [window_type="menu"] floating enable
+for_window [floating] border normal 
+for_window [floating] move position center
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -175,12 +204,12 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 bindsym Print exec gnome-screenshot
 
-# Change Keyboard Layout
-bindsym Mod4+space exec chkblayout
-
 # Automatic Lock & Suspend
 exec_always --no-startup-id sleepingbeauty
 
-# trigger rofi
+# Change Keyboard Layout
+bindsym Mod4+space exec chkblayout
+
+# Trigger rofi
 bindsym $mod+space exec rofi -show drun
 

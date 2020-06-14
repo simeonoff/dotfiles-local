@@ -6,10 +6,10 @@
 - clean: ['~']
 
 - link:
-      ~/.dotfiles-local: ''
-      ~/.config/autorandr:
+      ~/.Xresources:
       ~/.config/compton.conf:
       ~/.config/i3:
       ~/.config/polybar:
+      ~/.dotfiles-local: ''
 
 - shell: []
