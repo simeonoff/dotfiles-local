@@ -81,16 +81,17 @@ border-size = 0
 border-color = #00000000
 
 padding-left = 0
-padding-right = 0
+padding-right = 4
 
 module-margin-left = 1
 module-margin-right = 2
 
-font-0 = Ubuntu:pixelsize=11;2
-font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
-font-2 = siji:pixelsize=11;2
+font-0 = Noto Sans Disp:pixelsize=11;2
+font-1 = Font Awesome 5 Pro:style=Regular:size=11;2
+font-2 = Noto Sans Disp:style=Bold:size=11;2
 
 modules-left = i3
+modules-right = date
 
 [module/xwindow]
 type = internal/xwindow

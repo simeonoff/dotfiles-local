@@ -11,12 +11,10 @@ exec --no-startup-id redshift
 exec --no-startup-id compton --config ~/.config/compton.conf
 exec --no-startup-id imwheel -b "4 5"
 exec_always --no-startup-id ~/.config/polybar/launch
-exec --no-startup-id setxkbmap -option ctrl:swapcaps
 exec_always --no-startup-id xcape -e "Control_L=Escape"
 
-# Add monitors
-exec xrandr --output DisplayPort-1 --primary
-exec xrandr --output HDMI-A-0 --rotate right --left-of DisplayPort-1 && nitrogen --restore && i3-msg restart &
+exec --no-startup-id nitrogen --restore
+exec_always --no-startup-id ~/.dotfiles/bin/playeralert
 
 # Use pulseaudio-ctl to adjust volume in PulseAudio.
 bindsym XF86AudioRaiseVolume exec --no-startup-id pulseaudio-ctl up 5
